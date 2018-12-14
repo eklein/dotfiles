@@ -18,8 +18,12 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
-     go
+     html
+     (go :variables
+         ;; go-use-gometalinter t
+         go-tab-width 4)
      javascript
+     rust
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -32,9 +36,9 @@ values."
      github
      markdown
      org
-     (shell :variables
-             shell-default-height 30
-             shell-default-position 'bottom)
+     ;; (shell :variables
+     ;;         shell-default-height 30
+     ;;         shell-default-position 'bottom)
      ;; spell-checking
      syntax-checking
      version-control
@@ -44,10 +48,10 @@ values."
      shell-scripts
      ruby
      python
-     eyebrowse
+     ;; eyebrowse
      osx
      java
-     themes-megapack
+     ;; themes-megapack
      yaml
      tmux
      )
@@ -226,7 +230,7 @@ values."
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
    ;; Select a scope to highlight delimiters. Possible values are `any',
-   ;; `current', `all' or `nil'. Default is ll' (highlight any scope and
+   ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
    ;; emphasis the current one). (default 'all)
    dotspacemacs-highlight-delimiters 'all
    ;; If non nil advises quit functions to keep server open when quitting.
@@ -267,8 +271,9 @@ layers configuration. You are free to put any user code."
     (setq mac-system-move-file-to-trash-use-finder nil)
     (setq anaconda-mode-server-script "/usr/local/lib/python2.7/site-packages/anaconda_mode.py")
 
-    (setq eclim-eclipse-dirs "/usr/local/etc/eclipse"
-          eclim-executable "/usr/local/etc/eclipse/eclim")
+    (use-package pbcopy
+      :if (not (display-graphic-p))
+      :init (turn-on-pbcopy))
 
     (defun toggle-maximize-buffer () "Maximize buffer"
            (interactive)
@@ -278,41 +283,22 @@ layers configuration. You are free to put any user code."
                (window-configuration-to-register '_)
                      (delete-other-windows))))
 
-    (defun zerok/setup-gb-gopath ()
-      (interactive)
-      (make-local-variable 'process-environment)
-      (let ((srcPath (_zerok/get-gb-src-folder buffer-file-name)))
-        (when srcPath
-          (let* ((projectPath (string-remove-suffix "/" (file-name-directory srcPath)))
-                 (vendorPath (string-remove-suffix "/" (concat projectPath "/vendor")))
-                 (gopath (concat vendorPath ":" projectPath)))
-            (message "Updating GOPATH to %s" gopath)
-            (setenv "GOPATH" gopath)))))
-    (add-hook 'go-mode-hook 'zerok/setup-gb-gopath)
+;;    (add-hook 'go-mode-hook 'go-set-project)
 
-    (defun _zerok/get-gb-src-folder (path)
-      (let ((parent (directory-file-name (file-name-directory path)))
-            (basename (file-name-nondirectory path)))
-        (cond ((equal "src" basename)
-               (string-remove-suffix "/" path))
-              ((equal "/" parent)
-               nil)
-              (t
-               (_zerok/get-gb-src-folder parent)))))
+    (setq interprogram-paste-function nil)
+    (require 'helm-bookmark)
   )
-
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(package-selected-packages
+   (quote
+    (company-web web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode web-completion-data org-mime powerline pcre2el spinner org-category-capture alert log4e gntp markdown-mode skewer-mode simple-httpd multiple-cursors parent-mode projectile request gitignore-mode fringe-helper git-gutter+ git-gutter gh marshal logito pcache ht seq pos-tip flycheck pkg-info epl flx magit git-commit with-editor smartparens iedit anzu evil goto-chg highlight tablist magit-popup docker-tramp json-snatcher json-reformat diminish dash-functional tern restclient know-your-http-well go-mode eclim rust-mode inf-ruby bind-map bind-key packed anaconda-mode pythonic helm helm-core auto-complete popup yasnippet undo-tree json-mode js2-mode hydra f s dash company async avy org-plus-contrib yapfify yaml-mode ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org spaceline smeargle rvm ruby-tools ruby-test-mode rubocop rspec-mode robe reveal-in-osx-finder restclient-helm restart-emacs rbenv rake rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pbcopy paradox osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file ob-restclient ob-http neotree mwim move-text monokai-theme mmm-mode minitest markdown-toc magit-gitflow magit-gh-pulls macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint launchctl js2-refactor js-doc jinja2-mode insert-shebang info+ indent-guide hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag groovy-mode google-translate golden-ratio go-guru go-eldoc gnuplot github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy flycheck-rust flycheck-pos-tip flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump dockerfile-mode docker diff-hl cython-mode company-tern company-statistics company-shell company-restclient company-go company-emacs-eclim company-ansible company-anaconda column-enforce-mode coffee-mode clean-aindent-mode chruby cargo bundler auto-yasnippet auto-highlight-symbol auto-compile ansible-doc ansible aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+ )
