@@ -13,6 +13,6 @@ EXTRA_DIR="$HOME/.extra"
 
 # Bunch of symlinks
 
-ln -sfv "$DOTFILES_DIR/emacs/.spacemacs" ~
-ln -sfv "$DOTFILES_DIR/zsh/.zshrc" ~
-ln -sfv "$DOTFILES_DIR/tmux/.tmux.conf" ~
+ln -sfv "$DOTFILES_DIR/emacs/_spacemacs" ~/.spacemacs
+ln -sfv "$DOTFILES_DIR/zsh/_zshrc" ~/.zshrc
+ln -sfv "$DOTFILES_DIR/tmux/_tmux.conf" ~/.tmux.conf
